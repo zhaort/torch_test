@@ -8,4 +8,4 @@ class MyData(Dataset):
     def __getitem__(self, item):
         pass
 
-import os
+

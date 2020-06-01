@@ -28,6 +28,7 @@ all_imgs = datasets.ImageFolder(DATA_DIR + 'train', transform=transforms.Compose
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ]))
 
+# print(all_imgs[0][0].shape)
 # transforms.ToPILImage()(all_imgs[0][0]).show()
 loader = Data.DataLoader(all_imgs, batch_size=BATCH_SIZE, shuffle=True)
 
