@@ -40,7 +40,7 @@ style = load_image('C:\\Users\\45569\\Pictures\\Saved Pictures\\2.jpeg',
                    transform, shape=[content.size(2), content.size(3)])
 
 print(content.shape)
-# print(style.shape)
+# print(style.shape)   
 
 
 def show_image(image):
