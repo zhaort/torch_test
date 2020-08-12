@@ -104,9 +104,9 @@ def show_image(image):
 
 
 def test_my_model(gen):
-    z = torch.randn(3, LATENT_SIZE)
+    z = torch.randn(5, LATENT_SIZE)
     ims = gen(z)
-    ims = ims.view(3, 3, 128, 128)
+    ims = ims.view(5, 3, 128, 128)
     gen.eval()
     with torch.no_grad():
         for im in ims:
@@ -131,6 +131,10 @@ discriminator = D()
 generator = G(LATENT_SIZE, 128*128*3)
 generator.load_state_dict(torch.load('MyGAN2_g'))
 discriminator.load_state_dict(torch.load('MyGAN2_d'))
+
+test_my_model(generator)
+exit()
+
 loss_fn = nn.BCELoss()
 d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=0.0003)
 g_optimizer = torch.optim.Adam(generator.parameters(), lr=0.0003)
@@ -180,7 +184,7 @@ for epoch in range(EPOCHS):
                           fake_score.mean().item()))
             torch.save(discriminator.state_dict(), 'MyGAN2_d')
             torch.save(generator.state_dict(), 'MyGAN2_g')
-            test_my_model(generator)
+
 
 torch.save(discriminator.state_dict(), 'MyGAN2_d')
 torch.save(generator.state_dict(), 'MyGAN2_g')

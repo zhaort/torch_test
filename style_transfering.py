@@ -8,6 +8,7 @@ import torchvision
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 STEPS = 2000
 
@@ -34,9 +35,9 @@ transform = transforms.Compose([
                          std=[0.229, 0.224, 0.225])
 ])
 
-content = load_image('C:\\Users\\45569\\Pictures\\Saved Pictures\\2.jpg',
-                     transform, max_size=224)
-style = load_image('C:\\Users\\45569\\Pictures\\Saved Pictures\\2.jpeg',
+content = load_image('C:\\Users\\45569\\Pictures\\Saved Pictures\\c.jpg',
+                     transform, max_size=500)
+style = load_image('C:\\Users\\45569\\Pictures\\Saved Pictures\\b.jpg',
                    transform, shape=[content.size(2), content.size(3)])
 
 print(content.shape)
@@ -78,8 +79,18 @@ vgg = VGGNet().eval()
 # for feat in features:
 #     print(feat.shape)
 
-target = content.clone().requires_grad_(True)
-optimizer = torch.optim.Adam([target], lr=0.003, betas=(0.5, 0.999))
+TARGET_TMP_FILE = 'D:\\target'
+
+try:
+    with open(TARGET_TMP_FILE, 'rb') as f:
+        print('Load the pre-trained target')
+        target = pickle.load(f)
+except Exception as e:
+    print(e)
+    target = content.clone().requires_grad_(True)
+# show_image(denorm(target.clone().squeeze()))
+# exit()
+optimizer = torch.optim.Adam([target], lr=0.001, betas=(0.5, 0.999))
 
 for step in range(STEPS):
     target_features = vgg(target)
@@ -97,16 +108,20 @@ for step in range(STEPS):
         f3 = torch.mm(f3, f3.t())
         style_loss += torch.mean((f1-f3)**2) / (c*h*w)
 
-    loss = content_loss + style_loss * 100
+    loss = content_loss + style_loss * 1000
 
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
 
-    if step % 100 == 0:
+    if step % 25 == 0 and step != 0:
+        with open(TARGET_TMP_FILE, 'wb') as f:
+            pickle.dump(target, f)
+
+    if step % 100 == 0 and step != 0:
         print('Step [{}/{}], Content Loss: {:.4f}, Style Loss: {:.4f}'
               .format(step, STEPS, content_loss.item(), style_loss.item()))
-        show_image(denorm(target.clone().squeeze()))
+        # show_image(denorm(target.clone().squeeze()))
 
 
 # vgg = models.vgg19(pretrained=False)

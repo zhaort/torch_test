@@ -112,7 +112,7 @@ for epoch in range(EPOCHS):
         g_loss.backward()
         g_optimizer.step()
 
-        if i % 200 == 0:
+        if i % 200 == 0 and i != 0:
             print('Epoch [{}/{}], Step [{}/{}], d_loss: {:.4f}, g_loss: {:.4f}, D(x): {:.2f}, D(G(z)): {:.2f}'
                   .format(epoch, EPOCHS, i, TOTAL_STEPS, d_loss.item(), g_loss.item(), real_score.mean().item(),
                           fake_score.mean().item()))
